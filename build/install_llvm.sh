@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eux
 
-LINUX_VER=${LINUX_VER:-ubuntu-16.04}
+LINUX_VER=${LINUX_VER:-ubuntu-20.04}
 LLVM_VER=${LLVM_VER:-11.1.0}
 PREFIX=${PREFIX:-${HOME}}
 
