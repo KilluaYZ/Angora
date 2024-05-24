@@ -53,6 +53,12 @@ static void find_obj(u8 *argv0) {
     if (!access(tmp, R_OK)) {
       obj_path = dir;
       ck_free(tmp);
+    }
+
+    tmp = alloc_printf("%s/pass/libDaflPass.so", dir);
+    if (!access(tmp, R_OK)) {
+      obj_path = dir;
+      ck_free(tmp);
       return;
     }
 
@@ -60,7 +66,7 @@ static void find_obj(u8 *argv0) {
     ck_free(dir);
   }
 
-  FATAL("Unable to find 'libAngoraPass.so'");
+  FATAL("Unable to find 'libAngoraPass.so' or 'libDaflPass.so'");
 }
 
 static void check_type(char *name) {
@@ -196,6 +202,13 @@ static void add_dfsan_pass() {
   }
 }
 
+static void add_dafl_pass() {
+  cc_params[cc_par_cnt++] = "-Xclang";
+  cc_params[cc_par_cnt++] = "-load";
+  cc_params[cc_par_cnt++] = "-Xclang";
+  cc_params[cc_par_cnt++] = alloc_printf("%s/pass/libDaflPass.so", obj_path);
+}
+
 static void edit_params(u32 argc, char **argv) {
 
   u8 fortify_set = 0, asan_set = 0, x_set = 0, maybe_linking = 1, bit_mode = 0;
@@ -260,6 +273,7 @@ static void edit_params(u32 argc, char **argv) {
   if (!maybe_assembler) {
     add_angora_pass();
     add_dfsan_pass();
+    // add_dafl_pass();
   }
 
   cc_params[cc_par_cnt++] = "-pie";
@@ -340,7 +354,6 @@ static void edit_params(u32 argc, char **argv) {
 
    */
 
-  /*
   cc_params[cc_par_cnt++] = "-D__ANGORA_LOOP(_A)="
     "({ static volatile char *_B __attribute__((used)); "
     " _B = (char*)\"" PERSIST_SIG "\"; "
@@ -364,7 +377,6 @@ static void edit_params(u32 argc, char **argv) {
     "void _I(void) __asm__(\"__angora_manual_init\"); "
 #endif
     "_I(); } while (0)";
-  */
 
   if (is_cxx) {
     cc_params[cc_par_cnt++] = (const char *)"-stdlib=libc++";

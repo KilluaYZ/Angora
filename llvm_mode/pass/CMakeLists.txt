@@ -56,3 +56,7 @@ add_library(DFSanPass MODULE DFSanPass.cc)
 target_link_libraries(DFSanPass LLVMPassConfig)
 install (TARGETS DFSanPass DESTINATION ${ANGORA_PASS_DIR})
 
+add_library(DaflPass MODULE DaflPass.cc)
+target_link_libraries(DaflPass LLVMPassConfig)
+install (TARGETS DaflPass DESTINATION ${ANGORA_PASS_DIR})
+

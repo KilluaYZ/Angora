@@ -1,0 +1,9 @@
+[console_scripts]
+extract-bc = wllvm.extractor:main
+wfortran = wllvm.wfortran:main
+wllvm = wllvm.wllvm:main
+wllvm++ = wllvm.wllvmpp:main
+wllvm-as = wllvm.as:main
+wllvm-sanity-checker = wllvm.sanity:main
+wparse-args = wllvm.wparser:main
+

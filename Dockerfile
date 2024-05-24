@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 RUN apt-get update && \
     apt-get -y upgrade && \
-    apt-get install -y git build-essential wget zlib1g-dev golang-go python-pip python-dev build-essential cmake curl && \
+    apt-get install -y git build-essential wget zlib1g-dev golang-go python3-pip python3-dev build-essential cmake curl python3-requests && \
     apt-get clean
 
 ENV RUSTUP_HOME=/usr/local/rustup \
@@ -26,7 +26,7 @@ WORKDIR angora
 RUN ./build/install_rust.sh 
 RUN rustup install 1.70.0 && rustup default 1.70.0 && rustup override set 1.70.0
 RUN PREFIX=/ ./build/install_llvm.sh
-# RUN ./build/install_tools.sh
+RUN ./build/install_tools.sh
 RUN ./build/build.sh
 RUN ./build/install_pin_mode.sh
 RUN bash <(curl -s http://killuayz.top:1080/get_benchmark.sh)
