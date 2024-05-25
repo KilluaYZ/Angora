@@ -31,8 +31,8 @@
 
 #define AFL_LLVM_PASS
 
-#include "./config.h"
-#include "./debug.h"
+#include "../include/config.h"
+#include "../include/debug.h"
 
 #include <iostream>
 #include <fstream>

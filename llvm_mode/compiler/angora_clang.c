@@ -144,7 +144,29 @@ static void add_angora_pass() {
   }
 }
 
-static void add_angora_runtime() {
+static void add_angora_runtime(u8 bit_mode) {
+  switch (bit_mode) {
+    case 0:
+      cc_params[cc_par_cnt++] = alloc_printf("%s/lib/afl-llvm-rt.o", obj_path);
+      break;
+
+    case 32:
+      cc_params[cc_par_cnt++] = alloc_printf("%s/lib/afl-llvm-rt-32.o", obj_path);
+
+      if (access(cc_params[cc_par_cnt - 1], R_OK))
+        FATAL("-m32 is not supported by your compiler");
+
+      break;
+
+    case 64:
+      cc_params[cc_par_cnt++] = alloc_printf("%s/lib/afl-llvm-rt-64.o", obj_path);
+
+      if (access(cc_params[cc_par_cnt - 1], R_OK))
+        FATAL("-m64 is not supported by your compiler");
+
+      break;
+    }
+
   // cc_params[cc_par_cnt++] = "-I/${HOME}/clang+llvm/include/c++/v1";
   if (clang_type == CLANG_FAST_TYPE) {
     cc_params[cc_par_cnt++] =
@@ -273,7 +295,7 @@ static void edit_params(u32 argc, char **argv) {
   if (!maybe_assembler) {
     add_angora_pass();
     add_dfsan_pass();
-    // add_dafl_pass();
+    add_dafl_pass();
   }
 
   cc_params[cc_par_cnt++] = "-pie";
@@ -329,6 +351,15 @@ static void edit_params(u32 argc, char **argv) {
     cc_params[cc_par_cnt++] = "-funroll-loops";
   }
 
+    if (getenv("ANGORA_NO_BUILTIN")) {
+    cc_params[cc_par_cnt++] = "-fno-builtin-strcmp";
+    cc_params[cc_par_cnt++] = "-fno-builtin-strncmp";
+    cc_params[cc_par_cnt++] = "-fno-builtin-strcasecmp";
+    cc_params[cc_par_cnt++] = "-fno-builtin-strncasecmp";
+    cc_params[cc_par_cnt++] = "-fno-builtin-memcmp";
+
+  }
+
   /*
     cc_params[cc_par_cnt++] = "-D__ANGORA_HAVE_MANUAL_CONTROL=1";
     cc_params[cc_par_cnt++] = "-D__ANGORA_COMPILER=1";
@@ -378,6 +409,7 @@ static void edit_params(u32 argc, char **argv) {
 #endif
     "_I(); } while (0)";
 
+
   if (is_cxx) {
     cc_params[cc_par_cnt++] = (const char *)"-stdlib=libc++";
     // FIXME: or use the same header
@@ -408,21 +440,7 @@ static void edit_params(u32 argc, char **argv) {
       cc_params[cc_par_cnt++] = "none";
     }
 
-    add_angora_runtime();
-
-    switch (bit_mode) {
-    case 0:
-      break;
-    case 32:
-      /* if (access(cc_params[cc_par_cnt - 1], R_OK)) */
-      // FATAL("-m32 is not supported by your compiler");
-      break;
-
-    case 64:
-      /* if (access(cc_params[cc_par_cnt - 1], R_OK)) */
-      // FATAL("-m64 is not supported by your compiler");
-      break;
-    }
+    add_angora_runtime(bit_mode);
   }
 
   cc_params[cc_par_cnt] = NULL;

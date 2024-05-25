@@ -1,8 +1,8 @@
-FROM ubuntu:latest
+FROM ubuntu:16.04
 
 RUN apt-get update && \
     apt-get -y upgrade && \
-    apt-get install -y git build-essential wget zlib1g-dev golang-go python3-pip python3-dev build-essential cmake curl python3-requests && \
+    apt-get install -y git build-essential wget zlib1g-dev golang-go python-pip python build-essential cmake curl && \
     apt-get clean
 
 ENV RUSTUP_HOME=/usr/local/rustup \
