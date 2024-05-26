@@ -9,6 +9,7 @@ use std::sync::{
     Arc, RwLock,
 };
 use angora_common::dfg_shm::DFG_SHM;
+use angora_common::config;
 
 pub fn fuzz_loop(
     running: Arc<AtomicBool>,
@@ -19,7 +20,7 @@ pub fn fuzz_loop(
 ) {
     let search_method = cmd_opt.search_method;
 
-    let dfg_shm_id_str = match env::var("SHM_ENV_VAR_DFG") {
+    let dfg_shm_id_str = match env::var(config::SHM_ENV_VAR_DFG) {
         Ok(value) => value,
         Err(e) => panic!("[Error] Get Env Var SHM_ENV_VAR_DFG failed! error : {}",e)
     };
@@ -30,7 +31,18 @@ pub fn fuzz_loop(
     };
     println!("dfg_shm_id = {}", dfg_shm_id);
 
-    let dfg_shm = DFG_SHM::from_id(dfg_shm_id);
+    let afl_shm_id_str = match env::var(config::SHM_ENV_VAR) {
+        Ok(value) => value,
+        Err(e) => panic!("[Error] Get Env Var SHM_ENV_VAR failed! error : {}",e)
+    };
+
+    let afl_shm_id = match afl_shm_id_str.parse::<i32>(){
+        Ok(number) => number,
+        Err(e) => panic!("[Error] Parse Env Var SHM_ENV_VAR failed! error : {}",e)
+    };
+    println!("afl_shm_id = {}", afl_shm_id);
+
+    let dfg_shm = DFG_SHM::from_id(dfg_shm_id, afl_shm_id);
 
     let mut executor = Executor::new(
         cmd_opt,

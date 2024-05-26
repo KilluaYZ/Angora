@@ -18,7 +18,7 @@ impl<T> SHM<T> {
             libc::shmget(
                 libc::IPC_PRIVATE,
                 size,
-                libc::IPC_CREAT | libc::IPC_EXCL | 0o666,
+                libc::IPC_CREAT | libc::IPC_EXCL | 0o600,
             )
         };
         let ptr = unsafe { libc::shmat(id, std::ptr::null(), 0) as *mut T };

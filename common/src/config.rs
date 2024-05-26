@@ -44,4 +44,8 @@ pub const RANDOM_LEN_NUM: usize = 30;
 pub const MAX_HAVOC_FLIP_TIMES: usize = 45; // for all bytes
 pub const MAX_SPLICE_TIMES: usize = 45;
 
+pub const MAX_MAP_SIZE: usize = (1 << 16);
 pub const MAX_DFG_MAP_SIZE: usize = 32568;
+
+pub const SHM_ENV_VAR: &str = "__AFL_SHM_ID";
+pub const SHM_ENV_VAR_DFG: &str = "__AFL_SHM_ID_DFG";
