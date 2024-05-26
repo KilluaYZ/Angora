@@ -4,6 +4,7 @@ pub mod defs;
 pub mod log_data;
 pub mod shm;
 pub mod tag;
+pub mod dfg_shm;
 
 // void __unfold_branch_fn(uint32_t) {}
 

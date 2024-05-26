@@ -1,3 +1,4 @@
+use std::env;
 use crate::{
     branches::GlobalBranches, command::CommandOpt, cond_stmt::NextState, depot::Depot,
     executor::Executor, fuzz_type::FuzzType, search::*, stats,
@@ -7,6 +8,7 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc, RwLock,
 };
+use angora_common::dfg_shm::DFG_SHM;
 
 pub fn fuzz_loop(
     running: Arc<AtomicBool>,
@@ -16,11 +18,25 @@ pub fn fuzz_loop(
     global_stats: Arc<RwLock<stats::ChartStats>>,
 ) {
     let search_method = cmd_opt.search_method;
+
+    let dfg_shm_id_str = match env::var("SHM_ENV_VAR_DFG") {
+        Ok(value) => value,
+        Err(e) => panic!("[Error] Get Env Var SHM_ENV_VAR_DFG failed! error : {}",e)
+    };
+
+    let dfg_shm_id = match dfg_shm_id_str.parse::<i32>(){
+        Ok(number) => number,
+        Err(e) => panic!("[Error] Parse Env Var SHM_ENV_VAR_DFG failed! error : {}",e)
+    };
+
+    let dfg_shm = DFG_SHM::from_id(dfg_shm_id);
+
     let mut executor = Executor::new(
         cmd_opt,
         global_branches,
         depot.clone(),
         global_stats.clone(),
+        dfg_shm
     );
 
     while running.load(Ordering::Relaxed) {

@@ -17,6 +17,7 @@ use crate::{bind_cpu, branches, check_dep, command, depot, executor, fuzz_loop, 
 use ctrlc;
 use libc;
 use pretty_env_logger;
+use angora_common::dfg_shm::DFG_SHM;
 
 pub fn fuzz_main(
     mode: &str,
@@ -59,12 +60,13 @@ pub fn fuzz_main(
     let fuzzer_stats = create_stats_file_and_write_pid(&angora_out_dir);
     let running = Arc::new(AtomicBool::new(true));
     set_sigint_handler(running.clone());
-
+    let dfg_shm = DFG_SHM::new();
     let mut executor = executor::Executor::new(
         command_option.specify(0),
         global_branches.clone(),
         depot.clone(),
         stats.clone(),
+        dfg_shm
     );
 
     depot::sync_depot(&mut executor, running.clone(), &depot.dirs.seeds_dir);

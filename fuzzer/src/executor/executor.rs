@@ -18,6 +18,7 @@ use std::{
     time,
 };
 use wait_timeout::ChildExt;
+use angora_common::dfg_shm::DFG_SHM;
 
 pub struct Executor {
     pub cmd: command::CommandOpt,
@@ -33,6 +34,7 @@ pub struct Executor {
     pub has_new_path: bool,
     pub global_stats: Arc<RwLock<stats::ChartStats>>,
     pub local_stats: stats::LocalStats,
+    dfg_shm: DFG_SHM
 }
 
 impl Executor {
@@ -41,6 +43,7 @@ impl Executor {
         global_branches: Arc<branches::GlobalBranches>,
         depot: Arc<depot::Depot>,
         global_stats: Arc<RwLock<stats::ChartStats>>,
+        dfg_shm: DFG_SHM
     ) -> Self {
         // ** Share Memory **
         let branches = branches::Branches::new(global_branches);
@@ -95,6 +98,7 @@ impl Executor {
             has_new_path: false,
             global_stats,
             local_stats: Default::default(),
+            dfg_shm: dfg_shm
         }
     }
 
@@ -224,7 +228,7 @@ impl Executor {
     fn do_if_has_new(&mut self, buf: &Vec<u8>, status: StatusType, _explored: bool, cmpid: u32) {
         // new edge: one byte in bitmap
         let (has_new_path, has_new_edge, edge_num) = self.branches.has_new(status);
-
+        info!("prox_score = {}", self.dfg_shm.get_score());
         if has_new_path {
             self.has_new_path = true;
             self.local_stats.find_new(&status);
