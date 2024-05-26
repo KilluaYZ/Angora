@@ -27,7 +27,6 @@ serde_json = "1.0"
 # lazy_static = "1.1"
 memmap = "0.7.0"
 twoway = "0.2.0"
-nix = "0.23"
 
 angora_common = {path = "../common" }
 runtime = {path = "../runtime" }
