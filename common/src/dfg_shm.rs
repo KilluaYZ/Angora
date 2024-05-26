@@ -15,7 +15,7 @@ impl DFG_SHM {
     pub fn new() -> Self {
         let tmp_shm = SHM::<[u32; config::MAX_DFG_MAP_SIZE]>::new();
         env::set_var("SHM_ENV_VAR_DFG", tmp_shm.get_id().to_string());
-        let mut tmp_ptr = unsafe { (*tmp_shm.get_ptr()) };
+        let mut tmp_ptr = unsafe { *tmp_shm.get_ptr() };
         for i in 0..config::MAX_DFG_MAP_SIZE{
             tmp_ptr[i] = 0;
         }
@@ -26,9 +26,9 @@ impl DFG_SHM {
 
     pub fn get_score(&self) -> u32{
         let mut score = 0;
-        let ptr = unsafe { (*self.shm.get_ptr()) };
+        let ptr = unsafe { *self.shm.get_ptr() };
         for i in 0..config::MAX_DFG_MAP_SIZE{
-            score += ptr[i];
+            score = score + ptr[i];
         };
         score
     }

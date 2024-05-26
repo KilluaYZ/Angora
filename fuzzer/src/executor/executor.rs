@@ -228,8 +228,9 @@ impl Executor {
     fn do_if_has_new(&mut self, buf: &Vec<u8>, status: StatusType, _explored: bool, cmpid: u32) {
         // new edge: one byte in bitmap
         let (has_new_path, has_new_edge, edge_num) = self.branches.has_new(status);
-        info!("prox_score = {}", self.dfg_shm.get_score());
         if has_new_path {
+            info!("prox_score = {}", self.dfg_shm.get_score());
+
             self.has_new_path = true;
             self.local_stats.find_new(&status);
             let id = self.depot.save(status, &buf, cmpid);
@@ -269,6 +270,7 @@ impl Executor {
         self.run_init();
         let status = self.run_inner(buf);
         self.do_if_has_new(buf, status, false, 0);
+        // 打印一下score
         self.check_timeout(status, cond)
     }
 

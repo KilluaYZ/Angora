@@ -28,6 +28,7 @@ pub fn fuzz_loop(
         Ok(number) => number,
         Err(e) => panic!("[Error] Parse Env Var SHM_ENV_VAR_DFG failed! error : {}",e)
     };
+    println!("dfg_shm_id = {}", dfg_shm_id);
 
     let dfg_shm = DFG_SHM::from_id(dfg_shm_id);
 
