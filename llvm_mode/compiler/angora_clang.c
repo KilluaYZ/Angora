@@ -147,11 +147,11 @@ static void add_angora_pass() {
 static void add_angora_runtime(u8 bit_mode) {
   switch (bit_mode) {
     case 0:
-      cc_params[cc_par_cnt++] = alloc_printf("%s/lib/afl-llvm-rt.o", obj_path);
+      cc_params[cc_par_cnt++] = alloc_printf("%s/lib/afl-llvm-rt.a", obj_path);
       break;
 
     case 32:
-      cc_params[cc_par_cnt++] = alloc_printf("%s/lib/afl-llvm-rt-32.o", obj_path);
+      cc_params[cc_par_cnt++] = alloc_printf("%s/lib/afl-llvm-rt-32.a", obj_path);
 
       if (access(cc_params[cc_par_cnt - 1], R_OK))
         FATAL("-m32 is not supported by your compiler");
@@ -159,7 +159,7 @@ static void add_angora_runtime(u8 bit_mode) {
       break;
 
     case 64:
-      cc_params[cc_par_cnt++] = alloc_printf("%s/lib/afl-llvm-rt-64.o", obj_path);
+      cc_params[cc_par_cnt++] = alloc_printf("%s/lib/afl-llvm-rt-64.a", obj_path);
 
       if (access(cc_params[cc_par_cnt - 1], R_OK))
         FATAL("-m64 is not supported by your compiler");
